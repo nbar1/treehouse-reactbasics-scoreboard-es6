@@ -1,21 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Header from './Header';
-import Player from './Player';
-import AddPlayerForm from './AddPlayerForm';
+import Header from '../components/Header';
+import Player from '../components/Player';
+import AddPlayerForm from '../components/AddPlayerForm';
 
-import './Application.css';
+import './Scoreboard.css';
 
-class Application extends Component {
-	constructor(props) {
+class Scoreboard extends Component {
+	constructor() {
 		super();
 
-		this.nextId = props.initialPlayers.length + 1;
-
 		this.state = {
-			players: props.initialPlayers,
+			players: [
+				{
+					name: 'Nick Barone',
+					score: 31,
+					id: 1,
+				},
+				{
+					name: 'John Doe',
+					score: 35,
+					id: 2,
+				},
+				{
+					name: 'Jane Doe',
+					score: 42,
+					id: 3,
+				},
+			],
 		};
+
+		this.nextId = this.state.players.length + 1;
 	}
 
 	onScoreChange(index, delta) {
@@ -74,17 +90,12 @@ class Application extends Component {
 	}
 }
 
-Application.propTypes = {
+Scoreboard.propTypes = {
 	title: PropTypes.string,
-	initialPlayers: PropTypes.arrayOf(PropTypes.shape({
-		name: PropTypes.string.isRequired,
-		score: PropTypes.number.isRequired,
-		id: PropTypes.number.isRequired,
-	})).isRequired,
 };
 
-Application.defaultProps = {
+Scoreboard.defaultProps = {
 	title: 'Scoreboard',
 };
 
-export default Application;
+export default Scoreboard;
