@@ -18,10 +18,10 @@ class AddPlayerForm extends Component {
 		});
 	}
 
-	onSubmit(e) {
+	addPlayer(e) {
 		e.preventDefault();
 
-		this.props.onAdd(this.state.name);
+		this.props.addPlayer(this.state.name);
 		this.setState({
 			name: '',
 		});
@@ -32,7 +32,7 @@ class AddPlayerForm extends Component {
 			<div className="add-player-form">
 				<form
 					onSubmit={function(e) {
-						this.onSubmit(e);
+						this.addPlayer(e);
 					}.bind(this)}>
 					<input
 						type="text"
@@ -48,7 +48,7 @@ class AddPlayerForm extends Component {
 }
 
 AddPlayerForm.propTypes = {
-	onAdd: PropTypes.func.isRequired,
+	addPlayer: PropTypes.func.isRequired,
 };
 
 export default AddPlayerForm;

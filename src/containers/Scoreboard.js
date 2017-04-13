@@ -1,101 +1,56 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import Header from '../components/Header';
 import Player from '../components/Player';
 import AddPlayerForm from '../components/AddPlayerForm';
 
+import * as PlayerActionCreators from '../actions/player';
+
 import './Scoreboard.css';
 
 class Scoreboard extends Component {
-	constructor() {
-		super();
-
-		this.state = {
-			players: [
-				{
-					name: 'Nick Barone',
-					score: 31,
-					id: 1,
-				},
-				{
-					name: 'John Doe',
-					score: 35,
-					id: 2,
-				},
-				{
-					name: 'Jane Doe',
-					score: 42,
-					id: 3,
-				},
-			],
-		};
-
-		this.nextId = this.state.players.length + 1;
-	}
-
-	onScoreChange(index, delta) {
-		let newState = this.state;
-		newState.players[index].score += delta;
-
-		this.setState(newState);
-	}
-
-	onPlayerAdd(name) {
-		let newState = this.state;
-		newState.players.push({
-			name: name,
-			score: 0,
-			id: this.nextId,
-		});
-
-		this.setState(newState);
-
-		this.nextId++;
-	}
-
-	onRemovePlayer(index) {
-		let newState = this.state;
-		newState.players.splice(index, 1);
-
-		this.setState(newState);
-	}
-
 	render() {
+
+		const { dispatch, players } = this.props;
+		const addPlayer = bindActionCreators(PlayerActionCreators.addPlayer, dispatch);
+		const removePlayer = bindActionCreators(PlayerActionCreators.removePlayer, dispatch);
+		const updatePlayerScore = bindActionCreators(PlayerActionCreators.updatePlayerScore, dispatch);
+
+		const playerComponents = players.map((player, index) => (
+			<Player
+				index={index}
+				name={player.name}
+				score={player.score}
+				key={player.name}
+				updatePlayerScore={updatePlayerScore}
+				removePlayer={removePlayer}
+			/>
+		));
+
 		return (
 			<div className="scoreboard">
-				<Header title={this.props.title} players={this.state.players} />
+				<Header players={players} />
 				<div className="players">
-					{this.state.players.map(function(player, index) {
-						return (
-							<Player
-								onScoreChange={function(delta) {
-									this.onScoreChange(index, delta);
-								}.bind(this)}
-								onRemove={function() {
-									this.onRemovePlayer(index);
-								}.bind(this)}
-								name={player.name}
-								score={player.score}
-								key={player.id} />
-						);
-					}.bind(this))}
+					{playerComponents}
 				</div>
-				<AddPlayerForm
-					onAdd={function(name) {
-						this.onPlayerAdd(name);
-					}.bind(this)} />
+				<AddPlayerForm addPlayer={addPlayer} />
 			</div>
 		);
 	}
 }
 
 Scoreboard.propTypes = {
-	title: PropTypes.string,
+	players: PropTypes.array.isRequired,
+	dispatch: PropTypes.func.isRequired,
 };
 
-Scoreboard.defaultProps = {
-	title: 'Scoreboard',
-};
+const mapStateToProps = state => (
+	{
+		players: state,
+	}
+);
 
-export default Scoreboard;
+export default connect(mapStateToProps)(Scoreboard);
